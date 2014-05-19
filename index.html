@@ -5,6 +5,16 @@
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
+<canvas id="game_canvas" width="200" height="200"></canvas>
+<script>
+  var canvas = document.getElementById("game_canvas");
+  var context = canvas.getContext("2d");
+  context.fillStyle = "blue";
+  context.font = "bold 32px Arial";
+  context.fillText("12", 0, 32);
+  context.fillStyle = "red";
+  context.fillText("00", 0, 64);
+</script>
 <a href="https://play.google.com/store/apps/details?id=com.argst.oneundrednums">Get on Google Play</a>
 </body>
 </html>
