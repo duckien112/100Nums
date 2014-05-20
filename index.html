@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,57 +6,76 @@
 <link rel="shortcut icon" href="favicon.ico" />
 <style>
 *{
-/* 	padding: 0px; */
-/* 	margin: auto; */
+ 	//padding: 30px;
+ 	margin: auto;
 }
-#game_canvas {
-	background-color: #BBADA0;
-	margin-left: 300px;
+#contain {
+	width: 330px;
 }
 #timeRemainBar {
 	width: 330px;
 }
+#game_canvas {
+	background-color: #BBADA0;
+	margin: auto;
+}
 </style>
 </head>
 <body>
-	<progress id="timeRemainBar" value="22" max="100" > </progress>
+	<div id="contain" >
+	<progress id="timeRemainBar" value="100" max="100" > </progress>
 	<canvas id="game_canvas" width="330" height="405"></canvas>
 	<script>
 		var fontSize = 50;
 		var space = 5;
 		var colors = [ "red", "orange",	"yellow", "green", "blue", "indigo", "violet" ] ;
 		var canvas = document.getElementById("game_canvas");
+		var timeRemainBar = document.getElementById("timeRemainBar");
+		
 		canvas.addEventListener("mouseup", mouseDown, false);
 		var context = canvas.getContext("2d");
 		
 		context.font = "bold 50px Arial";
-		
+
 		var  width = 6;
 		var  height = 7;
-		var nums = [];
-		for(var i = 0; i < width*height; i++)
-			if(i < 10)
-				nums[i] = "0" + i.toString();
-			else
-				nums[i] = i.toString();
-		var numPoints = [];
-		var t = 0;
-		for (var i = 0; i < width; i++)
-			for (var j = 0; j < height; j++){
-				var k = Math.floor(Math.random()*7);
-				context.fillStyle = colors[k];
-				var index = Math.floor(Math.random()*nums.length);
-				var num = nums[index];
-				context.fillText(num, i*(fontSize+space), (j+1)*(fontSize+space));
-				numPoints.push({ n: num, color: k, x: i*(fontSize+space), y: (j+1)*(fontSize+space) });
-				//console.log("k: "+ k + " num: " + num + " X: " + (i*(fontSize+space)).toString() +  " Y: " + ((j+1)*(fontSize+space)).toString());
-				nums.splice(index, 1);
-				console.log("nums.length: " + nums.length);
-				t++;
-			}
-// 	  		for(var i = 0; i < numPoints.length; i++){
-//   				console.log("num: " + numPoints[i].n + " Color: " +  numPoints[i].color + " X: " + numPoints[i].x + " y: " + numPoints[i].y);
-//   			}
+		
+		var nums;
+		var remainTime;
+		var currentNum;
+		//init();
+		//function init(){
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			nums = [];
+			remainTime = 8; // seconds
+			currentNum = 0;
+			for(var i = 0; i < width*height; i++)
+				if(i < 10)
+					nums[i] = "0" + i.toString();
+				else
+					nums[i] = i.toString();
+			var numPoints = [];
+			var t = 0;
+			for (var i = 0; i < width; i++)
+				for (var j = 0; j < height; j++){
+					var k = Math.floor(Math.random()*7);
+					context.fillStyle = colors[k];
+					var index = Math.floor(Math.random()*nums.length);
+					var num = nums[index];
+					context.fillText(num, i*(fontSize+space), (j+1)*(fontSize+space));
+					numPoints.push({ n: num, color: k, x: i*(fontSize+space), y: (j+1)*(fontSize+space) });
+					//console.log("k: "+ k + " num: " + num + " X: " + (i*(fontSize+space)).toString() +  " Y: " + ((j+1)*(fontSize+space)).toString());
+					nums.splice(index, 1);
+					console.log("nums.length: " + nums.length);
+					t++;
+				}
+	// 	  		for(var i = 0; i < numPoints.length; i++){
+	//   				console.log("num: " + numPoints[i].n + " Color: " +  numPoints[i].color + " X: " + numPoints[i].x + " y: " + numPoints[i].y);
+	//   			}
+		//}
+		setTimeout(function(){timeRemainBar.setAttribute("value", 100*remainTime/(8 - 1));
+		remainTime--;
+		document.getElementById("debug").innerHTML = remainTime;}, 1000);
 		function mouseDown(event){
 			//alert("x: " + event.pageX + " y: " + event.pageY);
 			var mousePos = getMousePos(canvas, event);
@@ -64,7 +84,14 @@
 				if(mousePos.x >= numPoints[i].x && mousePos.x <= numPoints[i].x + fontSize
 				&& mousePos.y <= numPoints[i].y && mousePos.y >= numPoints[i].y - xxx){
 					//document.getElementById("debug").innerHTML = "x: " + mousePos.x + " y: " + mousePos.y;
-					document.getElementById("debug").innerHTML = parseInt(numPoints[i].n) + "x: " + mousePos.x + " y: " + mousePos.y;
+					if(parseInt(numPoints[i].n) == currentNum){
+						
+						currentNum++;
+					} else{
+						//document.getElementById("debug").innerHTML = "Game Over"
+						alert("Game Over");
+					}
+					//document.getElementById("debug").innerHTML = parseInt(numPoints[i].n) + "x: " + mousePos.x + " y: " + mousePos.y;
 					context.fillStyle = "black";
 					context.fillText(numPoints[i].n, numPoints[i].x, numPoints[i].y);
 					break;
@@ -79,10 +106,17 @@
 				y : evt.clientY - rect.top
 			};
 		}
+		function setTime(){
+			timeRemainBar.setAttribute("value", 100*remainTime/(8 - 1));
+			remainTime--;
+			document.getElementById("debug").innerHTML = remainTime;
+			setTime();
+		}
 	</script>
 	<a
 		href="https://play.google.com/store/apps/details?id=com.argst.oneundrednums">
 		Get on Google Play</a>
 	<div id="debug">Debug</div>
+	</div>
 </body>
 </html>
