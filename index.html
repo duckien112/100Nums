@@ -3,18 +3,86 @@
 <head>
 <title>100 Nums - iOS - Android - Windows Phone</title>
 <link rel="shortcut icon" href="favicon.ico" />
+<style>
+*{
+/* 	padding: 0px; */
+/* 	margin: auto; */
+}
+#game_canvas {
+	background-color: #BBADA0;
+	margin-left: 300px;
+}
+#timeRemainBar {
+	width: 330px;
+}
+</style>
 </head>
 <body>
-<canvas id="game_canvas" width="200" height="200"></canvas>
-<script>
-  var canvas = document.getElementById("game_canvas");
-  var context = canvas.getContext("2d");
-  context.fillStyle = "blue";
-  context.font = "bold 32px Arial";
-  context.fillText("12", 0, 32);
-  context.fillStyle = "red";
-  context.fillText("00", 0, 64);
-</script>
-<a href="https://play.google.com/store/apps/details?id=com.argst.oneundrednums">Get on Google Play</a>
+	<progress id="timeRemainBar" value="22" max="100" > </progress>
+	<canvas id="game_canvas" width="330" height="405"></canvas>
+	<script>
+		var fontSize = 50;
+		var space = 5;
+		var colors = [ "red", "orange",	"yellow", "green", "blue", "indigo", "violet" ] ;
+		var canvas = document.getElementById("game_canvas");
+		canvas.addEventListener("mouseup", mouseDown, false);
+		var context = canvas.getContext("2d");
+		
+		context.font = "bold 50px Arial";
+		
+		var  width = 6;
+		var  height = 7;
+		var nums = [];
+		for(var i = 0; i < width*height; i++)
+			if(i < 10)
+				nums[i] = "0" + i.toString();
+			else
+				nums[i] = i.toString();
+		var numPoints = [];
+		var t = 0;
+		for (var i = 0; i < width; i++)
+			for (var j = 0; j < height; j++){
+				var k = Math.floor(Math.random()*7);
+				context.fillStyle = colors[k];
+				var index = Math.floor(Math.random()*nums.length);
+				var num = nums[index];
+				context.fillText(num, i*(fontSize+space), (j+1)*(fontSize+space));
+				numPoints.push({ n: num, color: k, x: i*(fontSize+space), y: (j+1)*(fontSize+space) });
+				//console.log("k: "+ k + " num: " + num + " X: " + (i*(fontSize+space)).toString() +  " Y: " + ((j+1)*(fontSize+space)).toString());
+				nums.splice(index, 1);
+				console.log("nums.length: " + nums.length);
+				t++;
+			}
+// 	  		for(var i = 0; i < numPoints.length; i++){
+//   				console.log("num: " + numPoints[i].n + " Color: " +  numPoints[i].color + " X: " + numPoints[i].x + " y: " + numPoints[i].y);
+//   			}
+		function mouseDown(event){
+			//alert("x: " + event.pageX + " y: " + event.pageY);
+			var mousePos = getMousePos(canvas, event);
+			var xxx = 38;
+			for(var i = 0; i < numPoints.length; i++)
+				if(mousePos.x >= numPoints[i].x && mousePos.x <= numPoints[i].x + fontSize
+				&& mousePos.y <= numPoints[i].y && mousePos.y >= numPoints[i].y - xxx){
+					//document.getElementById("debug").innerHTML = "x: " + mousePos.x + " y: " + mousePos.y;
+					document.getElementById("debug").innerHTML = parseInt(numPoints[i].n) + "x: " + mousePos.x + " y: " + mousePos.y;
+					context.fillStyle = "black";
+					context.fillText(numPoints[i].n, numPoints[i].x, numPoints[i].y);
+					break;
+				}
+		}
+		
+		
+		function getMousePos(canvas, evt) {
+			var rect = canvas.getBoundingClientRect();
+			return {
+				x : evt.clientX - rect.left,
+				y : evt.clientY - rect.top
+			};
+		}
+	</script>
+	<a
+		href="https://play.google.com/store/apps/details?id=com.argst.oneundrednums">
+		Get on Google Play</a>
+	<div id="debug">Debug</div>
 </body>
 </html>
