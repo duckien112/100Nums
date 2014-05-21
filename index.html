@@ -45,12 +45,14 @@ body{
 		var context;
 		var  width = 6;
 		var  height = 7;
+		var TIME_WAIT = 8;
 		
 		var nums; // Store all Number to draw
 		var numPoints; // Store number and position
 		var remainTime;
 		var currentNum;
 		var isPause;
+		var iLoopColor;
 		setTimeout(setTime, 1000);
 		function init(){
 			canvas = document.getElementById("game_canvas");
@@ -63,7 +65,7 @@ body{
 			//context.fillRect(0, 0, canvas.width, canvas.height);
 			nums = [];
 			console.log("nums.length: " + nums.length);
-			remainTime = 8; // seconds
+			remainTime = TIME_WAIT; // seconds
 			currentNum = 0;
 			isPause = false;
 			for(var i = 0; i < width*height; i++)
@@ -102,7 +104,9 @@ body{
 					if(parseInt(numPoints[i].n) == currentNum){
 						sfx_hit_right.play();
 						currentNum++;
-						remainTime = 8;
+						remainTime = TIME_WAIT;
+						iLoopColor = numPoints[i].color+1;
+						setTimeout(loopColor, 100, numPoints[i], numPoints[i].color);
 						if(currentNum == width*height) gameWin();
 					} else{
 						//document.getElementById("debug").innerHTML = "Game Over"
@@ -126,7 +130,7 @@ body{
 		function setTime(){
 			if(isPause) return;
 			remainTime--;
-			timeRemainBar.value = 100*remainTime/(8 - 1);
+			timeRemainBar.value = 100*remainTime/(TIME_WAIT - 1);
 			document.getElementById("debug").innerHTML = remainTime;
 			if(remainTime == 0){
 				gameLost();
@@ -146,6 +150,15 @@ body{
 			isPause = true;
 			if(confirm("Game Win"))
 				init();
+		}
+		
+		function loopColor(numPoint, currentColor){
+			if(iLoopColor == 7) iLoopColor = 0;
+			context.fillStyle = colors[iLoopColor];
+			context.fillText(numPoint.n, numPoint.x, numPoint.y);
+			if(iLoopColor == currentColor) return;
+			iLoopColor++;
+			setTimeout(loopColor, 100, numPoint, currentColor);
 		}
 	</script>
 	
