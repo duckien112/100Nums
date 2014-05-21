@@ -9,6 +9,9 @@
  	//padding: 30px;
  	margin: auto;
 }
+body{
+	background-color: #e6e6dc;
+}
 #contain {
 	width: 330px;
 }
@@ -19,42 +22,57 @@
 	background-color: #BBADA0;
 	margin: auto;
 }
+.link{
+	float: right;
+	height: 80px;
+	line-height: 80px;
+}
 </style>
-</head>
-<body>
-	<div id="contain" >
-	<progress id="timeRemainBar" value="100" max="100" > </progress>
-	<canvas id="game_canvas" width="330" height="405"></canvas>
-	<script>
+
+<script>
+
+		//sound
+		var sfx_game_lost = new Audio('sound/sfx_game_lost.mp3');
+		var sfx_game_win = new Audio('sound/sfx_game_win.mp3');
+		var sfx_hit_right = new Audio('sound/sfx_hit_right.wav');
+		var sfx_menu_select = new Audio('sound/sfx_menu_select.m4a');
+		
 		var fontSize = 50;
 		var space = 5;
 		var colors = [ "red", "orange",	"yellow", "green", "blue", "indigo", "violet" ] ;
-		var canvas = document.getElementById("game_canvas");
-		var timeRemainBar = document.getElementById("timeRemainBar");
-		
-		canvas.addEventListener("mouseup", mouseDown, false);
-		var context = canvas.getContext("2d");
-		
-		context.font = "bold 50px Arial";
-
+		var canvas;
+		var timeRemainBar;
+		var context;
 		var  width = 6;
 		var  height = 7;
 		
-		var nums;
+		var nums; // Store all Number to draw
+		var numPoints; // Store number and position
 		var remainTime;
 		var currentNum;
-		//init();
-		//function init(){
+		var isPause;
+		setTimeout(setTime, 1000);
+		function init(){
+			canvas = document.getElementById("game_canvas");
+			timeRemainBar = document.getElementById("timeRemainBar");
+			canvas.addEventListener("mouseup", mouseDown, false);
+			context = canvas.getContext("2d");
+			context.font = "bold 50px Arial";
 			context.clearRect(0, 0, canvas.width, canvas.height);
+			//context.fillStyle = "rgba(187, 173, 160, 1.0)";
+			//context.fillRect(0, 0, canvas.width, canvas.height);
 			nums = [];
+			console.log("nums.length: " + nums.length);
 			remainTime = 8; // seconds
 			currentNum = 0;
+			isPause = false;
 			for(var i = 0; i < width*height; i++)
 				if(i < 10)
 					nums[i] = "0" + i.toString();
 				else
 					nums[i] = i.toString();
-			var numPoints = [];
+			numPoints = [];
+			console.log("numPoints.length: " + numPoints.length);
 			var t = 0;
 			for (var i = 0; i < width; i++)
 				for (var j = 0; j < height; j++){
@@ -66,16 +84,13 @@
 					numPoints.push({ n: num, color: k, x: i*(fontSize+space), y: (j+1)*(fontSize+space) });
 					//console.log("k: "+ k + " num: " + num + " X: " + (i*(fontSize+space)).toString() +  " Y: " + ((j+1)*(fontSize+space)).toString());
 					nums.splice(index, 1);
-					console.log("nums.length: " + nums.length);
+					//console.log("nums.length: " + nums.length);
 					t++;
 				}
 	// 	  		for(var i = 0; i < numPoints.length; i++){
 	//   				console.log("num: " + numPoints[i].n + " Color: " +  numPoints[i].color + " X: " + numPoints[i].x + " y: " + numPoints[i].y);
 	//   			}
-		//}
-		setTimeout(function(){timeRemainBar.setAttribute("value", 100*remainTime/(8 - 1));
-		remainTime--;
-		document.getElementById("debug").innerHTML = remainTime;}, 1000);
+			}
 		function mouseDown(event){
 			//alert("x: " + event.pageX + " y: " + event.pageY);
 			var mousePos = getMousePos(canvas, event);
@@ -85,15 +100,17 @@
 				&& mousePos.y <= numPoints[i].y && mousePos.y >= numPoints[i].y - xxx){
 					//document.getElementById("debug").innerHTML = "x: " + mousePos.x + " y: " + mousePos.y;
 					if(parseInt(numPoints[i].n) == currentNum){
-						
+						sfx_hit_right.play();
 						currentNum++;
+						remainTime = 8;
+						if(currentNum == width*height) gameWin();
 					} else{
 						//document.getElementById("debug").innerHTML = "Game Over"
-						alert("Game Over");
+						gameLost();
 					}
 					//document.getElementById("debug").innerHTML = parseInt(numPoints[i].n) + "x: " + mousePos.x + " y: " + mousePos.y;
-					context.fillStyle = "black";
-					context.fillText(numPoints[i].n, numPoints[i].x, numPoints[i].y);
+					//context.fillStyle = "black";
+					//context.fillText(numPoints[i].n, numPoints[i].x, numPoints[i].y);
 					break;
 				}
 		}
@@ -107,16 +124,54 @@
 			};
 		}
 		function setTime(){
-			timeRemainBar.setAttribute("value", 100*remainTime/(8 - 1));
+			if(isPause) return;
 			remainTime--;
+			timeRemainBar.value = 100*remainTime/(8 - 1);
 			document.getElementById("debug").innerHTML = remainTime;
-			setTime();
+			if(remainTime == 0){
+				gameLost();
+			}
+			setTimeout(setTime, 1000);
+		}
+		
+		function gameLost(){
+			sfx_game_lost.play();
+			isPause = true;
+			alert("Game Over");
+			init();
+		}
+		
+		function gameWin(){
+			sfx_game_win.play();
+			isPause = true;
+			if(confirm("Game Win"))
+				init();
 		}
 	</script>
-	<a
-		href="https://play.google.com/store/apps/details?id=com.argst.oneundrednums">
-		Get on Google Play</a>
-	<div id="debug">Debug</div>
+	
+</head>
+<body onload="init();">
+	<div id="contain" >
+		<img border="0" src="image/Title100Nums.png" >
+		<label>TRY TO FIND 00, 01, 02 .. YOU ONLY HAVE 7 SECONDS TO FIND A NUMBER</label>
+		<progress id="timeRemainBar" value="100" max="100" > </progress>
+		<canvas id="game_canvas" width="330" height="405">
+		Your browser doesn't support the HTML5<a
+			href="https://www.google.com/intl/en/chrome/browser/">Get Chrome Browser</a>
+		</canvas>
+		<div id="ios">
+			<a href="#"><img border="0" src="image/ios_logo.png" ></a>
+			<a class="link" href="#">google.com</a>
+		</div>
+		<div id="google">
+			<a href="http://goo.gl/PSza0o"><img border="0" src="image/google_play_logo.png" ></a>
+			<a class="link" href="http://goo.gl/PSza0o">goo.gl/PSza0o</a>
+		</div>
+		<div id="winphone">
+			<a href="#"><img border="0" src="image/windowsphone_logo.png" ></a>
+			<a class="link" href="#">google.com</a>
+		</div>
+		<div id="debug">Debug</div>
 	</div>
 </body>
 </html>
