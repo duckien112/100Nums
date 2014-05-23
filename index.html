@@ -133,6 +133,7 @@ body{
 		function setTime(){
 			if(isPause) return;
 			remainTime--;
+			timeRemainBar = document.getElementById("timeRemainBar");
 			timeRemainBar.value = 100*remainTime/(TIME_WAIT - 1);
 			document.getElementById("debug").innerHTML = remainTime;
 			if(remainTime == 0){
