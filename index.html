@@ -26,9 +26,6 @@ body{
 	float: left;
 }
 
-#google_share{
-	margin-left: 35px;
-}
 .store{
 	width: 65%;
 	margin: 0 auto;
@@ -185,11 +182,6 @@ body{
 	<meta property="og:description" content="In school days, most people play this game! Try to find 00, 01, 02 ... You have only 7 second to find a number! It's very hard and extremely addictive!"/>
 	<meta property="og:image" content="http://duckien112.github.io/100Nums/meta/og_image.png"/>
 	
-	<meta name="title" content="100 Nums game for iOS - Android - Windows Phone"/>
-	<meta name="site_name" content="100 Nums game for iOS - Android - Windows Phone"/>
-	<meta name="description" content="In school days, most people play this game! Try to find 00, 01, 02 ... You have only 7 second to find a number! It's very hard and extremely addictive!"/>
-	<meta name="image" content="http://duckien112.github.io/100Nums/meta/og_image.png"/>
-	
 </head>
 <body onload='init("TOUCH TO PLAY");'>
 	<div id="contain" >
@@ -206,11 +198,11 @@ body{
 			  js.src = "//connect.facebook.net/vi_VN/sdk.js#xfbml=1&appId=575221719213654&version=v2.0";
 			  fjs.parentNode.insertBefore(js, fjs);
 			}(document, 'script', 'facebook-jssdk'));</script>
-			<div class="share"><div class="fb-share-button" data-href="http://duckien112.github.io/100Nums/" data-type="button_count"></div></div>
+			<div class="share"><div class="fb-share-button" data-href="http://duckien112.github.io/100Nums/" data-type="button_count"></div>
 			
 			<!-- Google -->
 			<!-- Place this tag where you want the +1 button to render. -->
-			<div id="google_share" class="share"><div class="g-plusone" data-size="medium"></div></div>
+			<div class="share"><div class="g-plusone" data-size="medium"></div>
 			<script type="text/javascript">
 			  window.___gcfg = {lang: 'vi'};
 			  (function() {
@@ -238,6 +230,17 @@ body{
 		</div>
 		<div id="winphone" class="store">
 			<a href="#"><img border="0" src="image/windowsphone_logo.png" ></a>
+		</div>
+		<div id="follow">
+			<!-- Facebook  -->
+			<div class="share"><div class="fb-follow" data-href="https://www.facebook.com/buiduckien" data-colorscheme="light" data-layout="button" data-show-faces="true"></div></div>
+			
+			<!-- Google -->
+			<!-- Place this tag where you want the +1 button to render. -->
+			<div class="share"><div class="g-follow" data-annotation="bubble" data-height="20" data-href="//plus.google.com/u/0/112319746908341014987" data-rel="author"></div></div>
+			
+			<!-- Twitter -->
+			<div class="share"><a href="https://twitter.com/duckien112" class="twitter-follow-button" data-show-count="false" data-lang="en">Follow me</a></div>
 		</div>
 	</div>
 </body>
